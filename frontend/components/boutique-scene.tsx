@@ -5,7 +5,8 @@ import { ContactShadows, Environment, OrbitControls, Text } from "@react-three/d
 import { Suspense } from "react";
 import * as THREE from "three";
 
-type Props = { onSelectProduct: (id: number) => void };
+type SceneProps = { onSelectProduct: (id: number) => void };
+type RoomProps = { onSelect: (id: number) => void };
 type Point = [number, number, number];
 
 const brass = "#a88b63";
@@ -82,7 +83,7 @@ function Arch({ position, scale = 1 }: { position: Point; scale?: number }) {
 function Garment({ x, color, onSelect }: { x: number; color: string; onSelect: () => void }) {
   return (
     <group position={[x, 0, 0]} onClick={(e) => { e.stopPropagation(); onSelect(); }}>
-      <mesh position={[0, 1.48, 0]}><torusGeometry args={[0.12, 0.012, 6, 24, Math.PI]} rotation={[0, 0, Math.PI]} /><Material color={brass} metalness={0.75} roughness={0.28} /></mesh>
+      <mesh position={[0, 1.48, 0]} rotation={[0, 0, Math.PI]}><torusGeometry args={[0.12, 0.012, 6, 24, Math.PI]} /><Material color={brass} metalness={0.75} roughness={0.28} /></mesh>
       <mesh position={[0, 1.05, 0]} castShadow>
         <coneGeometry args={[0.23, 0.86, 4]} /><meshStandardMaterial color={color} roughness={0.92} side={THREE.DoubleSide} />
       </mesh>
@@ -95,7 +96,7 @@ function Rack({ position, onSelect }: { position: Point; onSelect: (id: number) 
   const colors = ["#c9b8a5", "#72564c", "#e4d9c9", "#998271", "#b9a18a", "#6c6258"];
   return (
     <group position={position}>
-      <mesh position={[0, 1.76, 0]}><cylinderGeometry args={[0.035, 0.035, 3.05, 12]} rotation={[0, 0, Math.PI / 2]} /><Material color={brass} metalness={0.8} roughness={0.28} /></mesh>
+      <mesh position={[0, 1.76, 0]} rotation={[0, 0, Math.PI / 2]}><cylinderGeometry args={[0.035, 0.035, 3.05, 12]} /><Material color={brass} metalness={0.8} roughness={0.28} /></mesh>
       {colors.map((color, i) => <Garment key={i} x={-1.15 + i * 0.46} color={color} onSelect={() => onSelect(1)} />)}
       {[-1.52, 1.52].map((x) => (
         <group key={x} position={[x, 0, 0]}>
@@ -142,7 +143,7 @@ function Handbag({ position, onSelect }: { position: Point; onSelect: (id: numbe
   return (
     <group position={position} onClick={(e) => { e.stopPropagation(); onSelect(3); }}>
       <mesh position={[0, 0.38, 0]} castShadow><boxGeometry args={[0.65, 0.52, 0.24]} /><Material color="#8a6654" roughness={0.42} /></mesh>
-      <mesh position={[0, 0.69, 0]}><torusGeometry args={[0.22, 0.025, 8, 32, Math.PI]} rotation={[0, 0, Math.PI]} /><Material color={brass} metalness={0.7} roughness={0.28} /></mesh>
+      <mesh position={[0, 0.69, 0]} rotation={[0, 0, Math.PI]}><torusGeometry args={[0.22, 0.025, 8, 32, Math.PI]} /><Material color={brass} metalness={0.7} roughness={0.28} /></mesh>
       <mesh position={[0, 0.4, 0.13]}><boxGeometry args={[0.12, 0.07, 0.015]} /><Material color={brass} metalness={0.75} roughness={0.24} /></mesh>
     </group>
   );
@@ -189,7 +190,7 @@ function CeilingLights() {
   );
 }
 
-function Room({ onSelect }: Props) {
+function Room({ onSelect }: RoomProps) {
   return (
     <group>
       <Floor />
@@ -216,7 +217,7 @@ function Room({ onSelect }: Props) {
   );
 }
 
-export default function BoutiqueScene({ onSelectProduct }: Props) {
+export default function BoutiqueScene({ onSelectProduct }: SceneProps) {
   return (
     <div className="scene-canvas">
       <Canvas shadows dpr={[1, 1.5]} camera={{ position: [10, 7.2, 11], fov: 42 }}>
