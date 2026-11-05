@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { ArrowDown, ArrowRight, ArrowUpRight, Bag, Menu, Search, X } from "lucide-react";
+import { gsap } from "gsap";
+import { ArrowDown, ArrowRight, ArrowUpRight, ShoppingBag, Menu, Search, X } from "lucide-react";
 
 const BoutiqueScene = dynamic(() => import("@/components/boutique-scene"), {
   ssr: false,
@@ -23,6 +24,13 @@ export default function Home() {
   const [showVisit, setShowVisit] = useState(false);
   const selectedProduct = useMemo(() => products.find((p) => p.id === selected), [selected]);
 
+  useEffect(() => {
+    const tween = gsap.fromTo(".hero-copy > *", { y: 22, opacity: 0 }, {
+      y: 0, opacity: 1, duration: 0.85, stagger: 0.12, ease: "power3.out", delay: 0.25,
+    });
+    return () => { tween.kill(); };
+  }, []);
+
   return (
     <main>
       <header className="site-header">
@@ -35,7 +43,7 @@ export default function Home() {
         </nav>
         <div className="header-actions">
           <button className="icon-button" aria-label="Rechercher"><Search size={19} /></button>
-          <button className="bag-button" onClick={() => document.getElementById("collections")?.scrollIntoView({ behavior: "smooth" })}><Bag size={18} /><span>Panier ({cartCount})</span></button>
+          <button className="bag-button" onClick={() => document.getElementById("collections")?.scrollIntoView({ behavior: "smooth" })}><ShoppingBag size={18} /><span>Panier ({cartCount})</span></button>
         </div>
       </header>
 
