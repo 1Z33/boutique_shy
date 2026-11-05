@@ -17,9 +17,9 @@ Open http://localhost:3000.
 
 ## Current prototype
 
-The homepage includes an interactive Three.js showroom, editorial product imagery, a responsive navigation and a visual shopping prototype.
+The homepage includes an interactive Three.js showroom with architectural panels, clothing rails, mannequins, shoe and handbag displays, plants and lighting; editorial product imagery; a responsive navigation; and a demo cart drawer with add/remove interactions.
 
-The current product list and cart are local demonstration state. They are not connected to an API, inventory, checkout or payment provider yet. Do not accept real orders from this prototype.
+The current product list and cart are local demonstration state. Cart contents are not persisted and are not connected to an API, inventory, checkout or payment provider. The checkout control is deliberately disabled. Do not accept real orders from this prototype.
 
 ## Visual assets
 
