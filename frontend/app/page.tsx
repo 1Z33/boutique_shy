@@ -19,7 +19,11 @@ const products = [
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+  const [cart, setCart] = useState<number[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const cartItems = useMemo(() => cart.map((id) => products.find((product) => product.id === id)!).filter(Boolean), [cart]);
+  const cartTotal = cartItems.reduce((sum, product) => sum + product.price, 0);
+  const addToCart = (id: number) => setCart((items) => [...items, id]);
   const [selected, setSelected] = useState<number | null>(null);
   const [showVisit, setShowVisit] = useState(false);
   const selectedProduct = useMemo(() => products.find((p) => p.id === selected), [selected]);
@@ -44,10 +48,18 @@ export default function Home() {
         </nav>
         <div className="header-actions">
           <button className="icon-button" aria-label="Rechercher"><Search size={19} /></button>
-          <button className="bag-button" onClick={() => document.getElementById("collections")?.scrollIntoView({ behavior: "smooth" })}><ShoppingBag size={18} /><span>Panier ({cartCount})</span></button>
+          <button className="bag-button" onClick={() => setCartOpen(true)}><ShoppingBag size={18} /><span>Panier ({cart.length})</span></button>
         </div>
       </header>
 
+      {cartOpen && <div className="cart-backdrop" onClick={() => setCartOpen(false)} />}
+      <aside className={cartOpen ? "cart-drawer cart-open" : "cart-drawer"} aria-hidden={!cartOpen}>
+        <div className="cart-heading"><div><span className="eyebrow">VOTRE SÉLECTION</span><h2>Le panier <em>SHY.</em></h2></div><button className="icon-button" onClick={() => setCartOpen(false)} aria-label="Fermer le panier"><X /></button></div>
+        {cartItems.length === 0 ? <div className="cart-empty"><ShoppingBag size={28} /><p>Votre panier est encore vide.</p><button className="text-link dark-link" onClick={() => { setCartOpen(false); document.getElementById("collections")?.scrollIntoView({ behavior: "smooth" }); }}>DÉCOUVRIR LA SÉLECTION <ArrowRight size={16} /></button></div> : <>
+          <div className="cart-lines">{cartItems.map((product, index) => <div className="cart-line" key={index}><div className="cart-thumb"><Image src={product.image} alt="" fill sizes="80px" unoptimized /></div><div className="cart-line-info"><span>{product.category}</span><strong>{product.name}</strong><small>{product.price} $</small></div><button className="remove-line" onClick={() => setCart((items) => items.filter((_, i) => i !== index))} aria-label={`Retirer ${product.name}`}><X size={15} /></button></div>)}</div>
+          <div className="cart-summary"><div><span>SOUS-TOTAL</span><strong>{cartTotal.toLocaleString("fr-FR")} $</strong></div><p>Livraison et modalités de paiement à confirmer lors du lancement de la boutique.</p><button className="checkout-placeholder" disabled>COMMANDE EN LIGNE BIENTÔT DISPONIBLE</button></div>
+        </>}
+      </aside>
       <section className="immersive-hero" id="univers">
         <BoutiqueScene onSelectProduct={setSelected} />
         <div className="hero-shade" />
@@ -68,7 +80,7 @@ export default function Home() {
             <h3>{selectedProduct.name}</h3>
             <p>{selectedProduct.category}</p>
             <strong>{selectedProduct.price.toLocaleString("fr-FR")} $</strong>
-            <button className="popover-action" onClick={() => { setCartCount((n) => n + 1); setSelected(null); }}>AJOUTER AU PANIER <ArrowRight size={15} /></button>
+            <button className="popover-action" onClick={() => { addToCart(selectedProduct.id); setSelected(null); setCartOpen(true); }}>AJOUTER AU PANIER <ArrowRight size={15} /></button>
           </aside>
         )}
       </section>
@@ -96,7 +108,7 @@ export default function Home() {
               </a>
               <div className="product-meta"><span>{product.category}</span><span>{product.note}</span></div>
               <div className="product-title-row"><h3>{product.name}</h3><strong>{product.price} $</strong></div>
-              <button className="quick-add" onClick={() => setCartCount((n) => n + 1)}>AJOUTER AU PANIER <ArrowRight size={15} /></button>
+              <button className="quick-add" onClick={() => { addToCart(product.id); setCartOpen(true); }}>AJOUTER AU PANIER <ArrowRight size={15} /></button>
             </article>
           ))}
         </div>
