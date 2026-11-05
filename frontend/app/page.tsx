@@ -43,7 +43,7 @@ export default function Home() {
         <a href="#" className="wordmark" aria-label="SHY Boutique accueil">SHY<span> BOUTIQUE</span><small>MAISON DE MODE</small></a>
         <nav className={menuOpen ? "main-nav nav-open" : "main-nav"}>
           <a href="#univers" onClick={() => setMenuOpen(false)}>L’UNIVERS</a>
-          <a href="#collections" onClick={() => setMenuOpen(false)}>COLLECTIONS</a>
+          <a href="/catalogue" onClick={() => setMenuOpen(false)}>COLLECTIONS</a>
           <a href="#maison" onClick={() => setMenuOpen(false)}>LA MAISON</a>
         </nav>
         <div className="header-actions">
@@ -96,7 +96,7 @@ export default function Home() {
       <section className="collection-section" id="collections">
         <div className="section-heading">
           <div><p className="eyebrow">LA SÉLECTION SHY</p><h2>Les pièces <em>à découvrir.</em></h2></div>
-          <a className="text-link dark-link" href="#collections">TOUTE LA COLLECTION <ArrowRight size={17} /></a>
+          <a className="text-link dark-link" href="/catalogue">TOUTE LA COLLECTION <ArrowRight size={17} /></a>
         </div>
         <div className="product-grid">
           {products.map((product, index) => (
