@@ -1,9 +1,16 @@
 import os
 from functools import lru_cache
+from pathlib import Path
+
+from dotenv import load_dotenv
 from sqlalchemy.engine import URL
 
+BACKEND_DIR = Path(__file__).resolve().parents[2]
+load_dotenv(BACKEND_DIR / ".env")
+
+
 class Settings:
-    app_name: str = "SHY BOUTIQUE API"
+    app_name: str = os.getenv("APP_NAME", "SHY BOUTIQUE API")
     api_v1_prefix: str = "/api/v1"
     database_url: str
     admin_api_key: str
@@ -29,8 +36,10 @@ class Settings:
             if origin.strip()
         ]
 
+
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
+
 
 settings = get_settings()
