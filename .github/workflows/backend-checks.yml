@@ -27,6 +27,7 @@ jobs:
           pip install -r requirements.txt
       - name: Run tests
         env:
+          PYTHONPATH: .
           DB_HOST: localhost
           DB_NAME: shy_db
           DB_USER: postgres
