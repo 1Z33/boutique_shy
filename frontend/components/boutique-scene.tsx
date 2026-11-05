@@ -182,7 +182,7 @@ function CeilingLights() {
         <group key={x} position={[x, 5.12, 0]}>
           <mesh><cylinderGeometry args={[0.16, 0.12, 0.28, 24]} /><Material color="#4b4035" metalness={0.45} roughness={0.35} /></mesh>
           <mesh position={[0, -0.16, 0]}><cylinderGeometry args={[0.1, 0.14, 0.035, 24]} /><meshStandardMaterial color="#f5e6c9" emissive="#f5d9a9" emissiveIntensity={0.65} /></mesh>
-          <spotLight position={[0, -0.2, 0]} target-position={[0, -4, 0]} intensity={18} angle={0.55} penumbra={0.85} color="#ffedcf" distance={8} />
+          <spotLight position={[0, -0.2, 0]} intensity={18} angle={0.55} penumbra={0.85} color="#ffedcf" distance={8} />
         </group>
       ))}
     </group>
