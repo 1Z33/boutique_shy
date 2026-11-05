@@ -33,6 +33,7 @@ export default function Home() {
 
   return (
     <main>
+      <div className="prototype-banner">APERÇU DE CONCEPTION · PRODUITS, PRIX ET PANIER DE DÉMONSTRATION</div>
       <header className="site-header">
         <button className="icon-button mobile-menu" aria-label="Ouvrir le menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
         <a href="#" className="wordmark" aria-label="SHY Boutique accueil">SHY<span> BOUTIQUE</span><small>MAISON DE MODE</small></a>
