@@ -63,7 +63,7 @@ function BrandWall() {
       <Text position={[0, 3.08, 0.21]} fontSize={0.48} color="#514438" anchorX="center" letterSpacing={0.13}>SHY BOUTIQUE</Text>
       <mesh position={[0, 2.69, 0.215]}><boxGeometry args={[2.7, 0.012, 0.012]} /><Material color={brass} metalness={0.7} roughness={0.3} /></mesh>
       <Text position={[0, 2.4, 0.21]} fontSize={0.105} color="#8c7967" anchorX="center" letterSpacing={0.27}>MAISON DE MODE</Text>
-      <Text position={[0, 1.7, 0.21]} fontSize={0.095} color="#9a8876" anchorX="center" letterSpacing={0.12}>L'ART DE SE SENTIR SOI</Text>
+      <Text position={[0, 1.7, 0.21]} fontSize={0.095} color="#9a8876" anchorX="center" letterSpacing={0.12}>L&apos;ART DE SE SENTIR SOI</Text>
       <WallPanel x={-4.45} />
       <WallPanel x={4.45} />
     </group>
