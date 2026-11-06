@@ -14,9 +14,9 @@ depends_on = None
 
 NEW_TABLES = [
     "audit_logs", "notifications", "storefront_placements_3d", "storefront_zones_3d",
-    "promotions", "deliveries", "delivery_zones", "payment_webhook_events", "payments",
-    "order_status_history", "order_items", "orders", "cart_items", "carts",
-    "stock_movements", "inventory_reservations", "inventory", "addresses", "users",
+    "promotions", "deliveries", "payment_webhook_events", "order_status_history",
+    "order_items", "inventory_reservations", "payments", "cart_items", "carts",
+    "stock_movements", "inventory", "delivery_zones", "orders", "addresses", "users",
 ]
 
 def upgrade() -> None:
