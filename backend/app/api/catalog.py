@@ -1,9 +1,10 @@
+from decimal import Decimal
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 from app.api.deps import require_admin
 from app.db.session import get_db
-from app.models import Category, Product, ProductVariant
+from app.models import Category, Product, ProductVariant, Inventory
 from app.schemas.catalog import CategoryCreate, CategoryRead, ProductCreate, ProductRead, ProductUpdate, VariantCreate
 
 router = APIRouter(prefix="/catalog", tags=["catalog"])
@@ -25,16 +26,11 @@ def create_category(payload: CategoryCreate, db: Session = Depends(get_db)):
     return category
 
 @router.get("/products", response_model=list[ProductRead])
-def list_products(
-    category: str | None = None,
-    q: str | None = Query(default=None, max_length=100),
-    featured: bool | None = None,
-    limit: int = Query(default=24, ge=1, le=100),
-    offset: int = Query(default=0, ge=0),
-    db: Session = Depends(get_db),
-):
+def list_products(category: str | None = None, q: str | None = Query(default=None, max_length=100),
+                  featured: bool | None = None, limit: int = Query(default=24, ge=1, le=100),
+                  offset: int = Query(default=0, ge=0), db: Session = Depends(get_db)):
     stmt = select(Product).options(selectinload(Product.variants)).join(Category).where(
-        Product.is_active.is_(True), Category.is_active.is_(True)
+        Product.is_active.is_(True), Category.is_active.is_(True), Product.currency == "CDF"
     )
     if category:
         stmt = stmt.where(Category.slug == category)
@@ -46,9 +42,9 @@ def list_products(
 
 @router.get("/products/{slug}", response_model=ProductRead)
 def get_product(slug: str, db: Session = Depends(get_db)):
-    product = db.scalar(
-        select(Product).options(selectinload(Product.variants)).where(Product.slug == slug, Product.is_active.is_(True))
-    )
+    product = db.scalar(select(Product).options(selectinload(Product.variants)).where(
+        Product.slug == slug, Product.is_active.is_(True), Product.currency == "CDF"
+    ))
     if not product:
         raise HTTPException(status_code=404, detail="Produit introuvable.")
     return product
@@ -56,6 +52,8 @@ def get_product(slug: str, db: Session = Depends(get_db)):
 @router.post("/products", response_model=ProductRead, status_code=status.HTTP_201_CREATED, dependencies=[Depends(require_admin)])
 def create_product(payload: ProductCreate, db: Session = Depends(get_db)):
     data = payload.model_dump(exclude={"variants"})
+    data["price_cdf"] = Decimal(data["price_cdf"])
+    data["currency"] = "CDF"
     category = db.get(Category, data["category_id"])
     if not category or not category.is_active:
         raise HTTPException(status_code=400, detail="Catégorie invalide.")
@@ -63,6 +61,9 @@ def create_product(payload: ProductCreate, db: Session = Depends(get_db)):
     product.variants = [ProductVariant(**variant.model_dump()) for variant in payload.variants]
     db.add(product)
     try:
+        db.flush()
+        for variant in product.variants:
+            db.add(Inventory(variant_id=variant.id, physical_quantity=variant.stock_quantity, reserved_quantity=0))
         db.commit()
         db.refresh(product)
     except Exception:
@@ -75,7 +76,10 @@ def update_product(product_id: int, payload: ProductUpdate, db: Session = Depend
     product = db.scalar(select(Product).options(selectinload(Product.variants)).where(Product.id == product_id))
     if not product:
         raise HTTPException(status_code=404, detail="Produit introuvable.")
-    for key, value in payload.model_dump(exclude_unset=True).items():
+    values = payload.model_dump(exclude_unset=True)
+    if "price_cdf" in values:
+        values["price_cdf"] = Decimal(values["price_cdf"])
+    for key, value in values.items():
         setattr(product, key, value)
     db.commit()
     db.refresh(product)
@@ -89,6 +93,8 @@ def add_variant(product_id: int, payload: VariantCreate, db: Session = Depends(g
     variant = ProductVariant(product_id=product_id, **payload.model_dump())
     db.add(variant)
     try:
+        db.flush()
+        db.add(Inventory(variant_id=variant.id, physical_quantity=variant.stock_quantity, reserved_quantity=0))
         db.commit()
         db.refresh(variant)
     except Exception:
