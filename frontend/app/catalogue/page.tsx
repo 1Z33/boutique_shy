@@ -9,7 +9,6 @@ import "./catalogue.css";
 
 type Category = "Tout" | "Vêtements" | "Chaussures";
 
-export const metadata = undefined;
 
 export default function CataloguePage() {
   const [category, setCategory] = useState<Category>("Tout");
