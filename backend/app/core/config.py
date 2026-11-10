@@ -15,6 +15,8 @@ class Settings:
     database_url: str
     admin_api_key: str
     cors_origins: list[str]
+    uploads_dir: Path
+    public_base_url: str
 
     def __init__(self) -> None:
         explicit_url = os.getenv("DATABASE_URL")
@@ -35,6 +37,9 @@ class Settings:
             for origin in os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
             if origin.strip()
         ]
+        self.uploads_dir = Path(os.getenv("UPLOADS_DIR") or (BACKEND_DIR / "uploads"))
+        self.public_base_url = os.getenv("PUBLIC_BASE_URL", "http://localhost:8000").rstrip("/")
+        self.uploads_dir.mkdir(parents=True, exist_ok=True)
 
 
 @lru_cache

@@ -1,4 +1,4 @@
-from decimal import Decimal
+from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 class CategoryCreate(BaseModel):
@@ -27,8 +27,7 @@ class ProductCreate(BaseModel):
     name: str = Field(min_length=2, max_length=180)
     slug: str = Field(min_length=2, max_length=200, pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
     description: str | None = None
-    price: Decimal = Field(gt=0, max_digits=12, decimal_places=2)
-    currency: str = Field(default="USD", pattern=r"^(USD|CDF)$")
+    price_cdf: int = Field(gt=0)
     images: list[str] = Field(default_factory=list, max_length=12)
     is_featured: bool = False
     variants: list[VariantCreate] = Field(default_factory=list)
@@ -37,17 +36,17 @@ class ProductCreate(BaseModel):
     @classmethod
     def validate_images(cls, values: list[str]) -> list[str]:
         for value in values:
-            if not value.startswith(("https://", "http://")):
-                raise ValueError("Chaque image doit être une URL HTTP(S).")
-        return values
+            v = (value or "").strip()
+            if v and not v.startswith(("https://", "http://", "/uploads/")):
+                raise ValueError("Chaque image doit être une URL HTTP(S) ou un chemin /uploads/…")
+        return [v.strip() for v in values if v and v.strip()]
 
 class ProductUpdate(BaseModel):
     category_id: int | None = Field(default=None, gt=0)
     name: str | None = Field(default=None, min_length=2, max_length=180)
     slug: str | None = Field(default=None, min_length=2, max_length=200, pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
     description: str | None = None
-    price: Decimal | None = Field(default=None, gt=0, max_digits=12, decimal_places=2)
-    currency: str | None = Field(default=None, pattern=r"^(USD|CDF)$")
+    price_cdf: int | None = Field(default=None, gt=0)
     images: list[str] | None = Field(default=None, max_length=12)
     is_active: bool | None = None
     is_featured: bool | None = None
@@ -59,8 +58,8 @@ class ProductRead(BaseModel):
     name: str
     slug: str
     description: str | None
-    price: Decimal
-    currency: str
+    price_cdf: int
+    currency: Literal["CDF"]
     images: list[str]
     is_active: bool
     is_featured: bool
