@@ -41,4 +41,4 @@ Documentation OpenAPI : http://localhost:8000/docs
 - products
 - product_variants (SKU, taille, couleur, stock)
 
-Les prix catalogue sont désormais exprimés en CDF uniquement (champ API `price_cdf`). Les anciens produits encore marqués USD sont volontairement masqués du catalogue public : aucune conversion automatique n'est effectuée. La migration 0002 ajoute les tables commerciales et copie le stock existant des variantes dans la table `inventory`. Les commandes, le checkout, les réservations métier, les comptes clients et les paiements réels restent à implémenter. Aucun paiement réel n'est activé.
+Les routes de catalogue sont prêtes pour une première intégration. Les commandes, comptes clients, paiements Mobile Money, livraison, téléversement d'images et véritable interface d'administration restent à construire. Aucun paiement réel n'est activé.

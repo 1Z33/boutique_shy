@@ -33,7 +33,7 @@ SHY BOUTIQUE est une boutique e-commerce de vêtements et chaussures pour femmes
 ## Marché et paramètres
 
 - Marché initial : RDC.
-- Devise retenue : CDF uniquement. Aucun taux de conversion USD/CDF n'est utilisé dans le parcours de vente.
+- Devises prévues : USD et CDF, taux de conversion administrable.
 - Moyens de paiement : Mobile Money via un prestataire/opérateur contracté et paiement à la livraison.
 - Les paiements doivent être confirmés par une preuve serveur vérifiable ; aucune déclaration cliente ne suffit.
 
