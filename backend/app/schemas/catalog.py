@@ -36,9 +36,10 @@ class ProductCreate(BaseModel):
     @classmethod
     def validate_images(cls, values: list[str]) -> list[str]:
         for value in values:
-            if not value.startswith(("https://", "http://")):
-                raise ValueError("Chaque image doit être une URL HTTP(S).")
-        return values
+            v = (value or "").strip()
+            if v and not v.startswith(("https://", "http://", "/uploads/")):
+                raise ValueError("Chaque image doit être une URL HTTP(S) ou un chemin /uploads/…")
+        return [v.strip() for v in values if v and v.strip()]
 
 class ProductUpdate(BaseModel):
     category_id: int | None = Field(default=None, gt=0)
